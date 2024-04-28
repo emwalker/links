@@ -1,57 +1,48 @@
+use anyhow::Result;
 use axum::{
-    http::StatusCode,
     routing::{get, post},
     Json, Router,
 };
-use serde_derive::{Deserialize, Serialize};
+use recommendations::user;
+use serde_derive::Serialize;
+use sqlx::sqlite::SqlitePool;
+
+#[derive(Clone)]
+struct AppState {
+    _conn: SqlitePool,
+}
 
 #[tokio::main]
-async fn main() {
-    // initialize tracing
+async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
 
-    // build our application with a route
+    let db_url = "./data/development.sqlite3?mode=rwc";
+    let conn = SqlitePool::connect(db_url)
+        .await
+        .expect("failed to open sqlite");
+    let state = AppState { _conn: conn };
+
     let app = Router::new()
-        // `GET /` goes to `root`
         .route("/", get(root))
-        // `POST /users` goes to `create_user`
-        .route("/users", post(create_user));
+        .route("/users", get(user::list))
+        .route("/users", post(user::create))
+        .with_state(state);
 
-    // run our app with hyper, listening globally on port 8000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app).await?;
+
+    Ok(())
 }
 
-// basic handler that responds with a static string
-async fn root() -> &'static str {
-    "Hello, World!"
-}
-
-async fn create_user(
-    // this argument tells axum to parse the request body
-    // as JSON into a `CreateUser` type
-    Json(payload): Json<CreateUser>,
-) -> (StatusCode, Json<User>) {
-    // insert your application logic here
-    let user = User {
-        id: 1337,
-        username: payload.username,
-    };
-
-    // this will be converted into a JSON response
-    // with a status code of `201 Created`
-    (StatusCode::CREATED, Json(user))
-}
-
-// the input to our `create_user` handler
-#[derive(Deserialize)]
-struct CreateUser {
-    username: String,
-}
-
-// the output to our `create_user` handler
 #[derive(Serialize)]
-struct User {
-    id: u64,
-    username: String,
+struct Root {
+    message: String,
+    status: String,
+}
+
+async fn root() -> Json<Root> {
+    Json(Root {
+        message: "Recommendations, v1".to_string(),
+        status: "up".to_string(),
+    })
 }
