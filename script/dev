@@ -1,0 +1,33 @@
+#!/usr/bin/bash
+
+set -e
+set -o pipefail
+
+backend_pid=
+client_pid=
+
+function cleanup() {
+  [ ! -z "$backend_pid" ] && kill -INT $backend_pid || true
+  [ ! -z "$client_pid" ] && kill -INT $client_pid || true
+  pkill -f "backend" || true
+  pkill -f "npm run dev" || true
+}
+
+function on_sigint() {
+  echo ""
+  echo "stopping processes ..."
+  cleanup
+}
+
+trap 'on_sigint' SIGINT
+
+cleanup
+echo "starting up ..."
+make -C backend dev &
+backend_pid=$!
+
+make -C client dev &
+client=$!
+
+wait $backend_pid
+wait $client_pid
