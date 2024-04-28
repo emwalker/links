@@ -16,7 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <ol className="bm-4">
+          <li><a href="/">Recommendations</a></li>
+        </ol>
+
+        {children}
+      </body>
     </html>
   );
 }

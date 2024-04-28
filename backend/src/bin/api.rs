@@ -1,28 +1,30 @@
 use anyhow::Result;
 use axum::{
+    http::Method,
     routing::{get, post},
     Json, Router,
 };
-use recommendations::user;
+use recommendations::{types::AppState, user};
 use serde_derive::Serialize;
 use sqlx::sqlite::SqlitePool;
-
-#[derive(Clone)]
-struct AppState {
-    _conn: SqlitePool,
-}
+use tower_http::cors::{Any, CorsLayer};
 
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
 
-    let db_url = "./data/development.sqlite3?mode=rwc";
+    let db_url = "./data/development.db?mode=rwc";
     let conn = SqlitePool::connect(db_url)
         .await
         .expect("failed to open sqlite");
-    let state = AppState { _conn: conn };
+    let state = AppState { conn };
+
+    let cors = CorsLayer::new()
+        .allow_methods([Method::GET, Method::POST])
+        .allow_origin(Any);
 
     let app = Router::new()
+        .layer(cors)
         .route("/", get(root))
         .route("/users", get(user::list))
         .route("/users", post(user::create))
