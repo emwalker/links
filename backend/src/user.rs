@@ -1,14 +1,24 @@
+use std::collections::HashSet;
+
 use axum::{extract::State, response::IntoResponse, Json};
 use axum_macros::debug_handler;
 use serde::Deserialize;
 use serde_derive::Serialize;
 
-use crate::types::{AppState, Result};
+use crate::types::{AppState, Result, Role};
 
-#[derive(sqlx::FromRow, Serialize)]
+#[derive(Serialize)]
 pub struct User {
     id: String,
     username: String,
+    roles: Vec<Role>,
+}
+
+#[derive(sqlx::FromRow)]
+pub struct UserRow {
+    id: String,
+    username: String,
+    role_names: String,
 }
 
 #[debug_handler]
@@ -20,9 +30,34 @@ pub async fn list(State(state): State<AppState>) -> Result<impl IntoResponse> {
         page: usize,
     }
 
-    let items = sqlx::query_as::<_, User>("select id, username from users")
-        .fetch_all(&state.conn)
-        .await?;
+    let items = sqlx::query_as::<_, UserRow>(
+        r#"
+        select u.id, u.username, group_concat(r.name, ",") role_names
+        from users u
+        join users_roles ur on u.id = ur.user_id
+        join roles r on ur.role_id = r.id
+        "#,
+    )
+    .fetch_all(&state.conn)
+    .await?
+    .into_iter()
+    .map(
+        |UserRow {
+             id,
+             username,
+             role_names,
+         }| User {
+            id,
+            username,
+            roles: role_names
+                .split(',')
+                .map(Role::from)
+                .collect::<HashSet<_>>()
+                .into_iter()
+                .collect::<Vec<_>>(),
+        },
+    )
+    .collect::<Vec<_>>();
 
     Ok(Json(ListUserResponse {
         page: 1,
@@ -49,6 +84,12 @@ pub async fn create(
     sqlx::query("insert into users (id, username) values (?, ?)")
         .bind(&created_user_id)
         .bind(&payload.username)
+        .execute(&state.conn)
+        .await?;
+
+    sqlx::query("insert into users_roles (user_id, role_id) values (?, ?)")
+        .bind(&created_user_id)
+        .bind(Role::Editor.to_id())
         .execute(&state.conn)
         .await?;
 

@@ -45,7 +45,7 @@ export default function GET() {
         {
           users.map(({ id, username }) => (
             <li key={id}>
-              {username} ({id})
+              <span title={id}>{username}</span>
             </li>
           ))
         }

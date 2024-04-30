@@ -9,5 +9,5 @@ check:
 dev:
 	script/start dev
 
-prod:
+start:
 	script/start prod
