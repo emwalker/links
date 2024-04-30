@@ -5,12 +5,13 @@ set -o pipefail
 
 backend_pid=
 client_pid=
+environment=${1:-dev}
 
 function cleanup() {
   [ ! -z "$backend_pid" ] && kill -INT $backend_pid || true
   [ ! -z "$client_pid" ] && kill -INT $client_pid || true
   pkill -f "backend" || true
-  pkill -f "npm run dev" || true
+  pkill -f "npm run $environment" || true
 }
 
 function on_sigint() {
@@ -23,10 +24,10 @@ trap 'on_sigint' SIGINT
 
 cleanup
 echo "starting up ..."
-make -C backend dev &
+make -C backend $environment &
 backend_pid=$!
 
-make -C client dev &
+make -C client $environment &
 client=$!
 
 wait $backend_pid
