@@ -7,7 +7,8 @@ export default function Home() {
 
       <div>
         <ul>
-          <li><a href="/users">List of users</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="/topics">Topics</a></li>
         </ul>
       </div>
     </main>

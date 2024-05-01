@@ -26,7 +26,7 @@ async fn main() -> Result<()> {
     let app = Router::new()
         .layer(cors)
         .route("/", get(root))
-        .route("/users", get(user::list))
+        .route("/users", get(user::fetch_all))
         .route("/users", post(user::create))
         .with_state(state);
 

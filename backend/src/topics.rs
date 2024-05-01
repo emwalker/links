@@ -4,19 +4,19 @@ use axum::{extract::State, response::IntoResponse, Json};
 use serde_derive::Serialize;
 
 use crate::store;
-use crate::types::{AppState, Result, User};
+use crate::types::{AppState, Result, Topic};
 
-pub async fn fetch_all(State(state): State<AppState>) -> Result<impl IntoResponse> {
-    #[derive(Serialize)]
-    pub struct ListUserResponse {
-        total: usize,
-        items: Vec<User>,
-        page: usize,
-    }
+#[derive(Serialize)]
+pub struct ListTopicResponse {
+    total: usize,
+    items: Vec<Topic>,
+    page: usize,
+}
 
-    let items = store::users::fetch_all(&state.conn, None).await?;
+pub async fn list(State(state): State<AppState>) -> Result<impl IntoResponse> {
+    let items = store::topics::fetch_all(&state.conn, None).await?;
 
-    Ok(Json(ListUserResponse {
+    Ok(Json(ListTopicResponse {
         page: 1,
         total: items.len(),
         items,
@@ -25,9 +25,9 @@ pub async fn fetch_all(State(state): State<AppState>) -> Result<impl IntoRespons
 
 pub async fn create(
     State(state): State<AppState>,
-    Json(payload): Json<store::users::CreatePayload>,
+    Json(payload): Json<store::topics::CreatePayload>,
 ) -> Result<(StatusCode, impl IntoResponse)> {
-    let result = store::users::create(&state.conn, &payload).await?;
+    let result = store::topics::create(&state.conn, &payload).await?;
     let status = if result.created {
         StatusCode::OK
     } else {

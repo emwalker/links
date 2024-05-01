@@ -76,6 +76,13 @@ pub struct User {
 }
 
 #[derive(Serialize)]
+pub struct Topic {
+    pub id: String,
+    pub name: String,
+    pub updated_at: String,
+}
+
+#[derive(Serialize)]
 pub struct ErrorMap(BTreeMap<String, Vec<String>>);
 
 impl ErrorMap {

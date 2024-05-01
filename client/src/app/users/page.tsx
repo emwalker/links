@@ -9,13 +9,13 @@ type User = {
   is_admin: boolean,
 }
 
-type UserListResponse = {
+type FetchUsersResponse = {
   total: Number,
   items: User[],
   page: Number,
 }
 
-async function fetchUsers(): Promise<UserListResponse> {
+async function fetchUsers(): Promise<FetchUsersResponse> {
   const res = await fetch('http://localhost:3000/api/users', { cache: 'no-cache' })
 
   if (!res.ok) {
@@ -40,7 +40,7 @@ export default function GET() {
   return (
     <main className="p-24">
       <h1 className="font-bold text-xl mb-4">
-        List of users
+        Users
       </h1>
 
       <ul className="mb-4">
