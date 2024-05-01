@@ -16,6 +16,9 @@ pub enum Error {
 
     #[error("server error")]
     InternalServerError,
+
+    #[error("failed to create user")]
+    UserCreationError,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
