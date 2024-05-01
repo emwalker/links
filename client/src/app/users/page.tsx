@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 type User = {
   id: string,
   username: string,
+  name: String,
+  is_admin: boolean,
 }
 
 type UserListResponse = {
@@ -43,9 +45,15 @@ export default function GET() {
 
       <ul className="mb-4">
         {
-          users.map(({ id, username }) => (
+          users.map(({ id, name, username, is_admin }) => (
             <li key={id}>
-              <span title={id}>{username}</span>
+              {
+                name ? (
+                  <span title={id}>{name} ({username}) {is_admin ? '[admin]' : ''}</span>
+                ) : (
+                  <span title={id}>{username} {is_admin ? '[admin]' : ''}</span>
+                )
+              }
             </li>
           ))
         }

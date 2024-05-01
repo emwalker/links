@@ -4,6 +4,7 @@ use axum::{
 };
 use serde::Serialize;
 use sqlx::sqlite::SqlitePool;
+use std::collections::BTreeMap;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -63,5 +64,34 @@ impl From<&str> for Role {
             "editor" => Self::Editor,
             _ => Self::Unknown,
         }
+    }
+}
+
+#[derive(Serialize)]
+pub struct User {
+    pub id: String,
+    pub username: String,
+    pub name: String,
+    pub is_admin: bool,
+}
+
+#[derive(Serialize)]
+pub struct ErrorMap(BTreeMap<String, Vec<String>>);
+
+impl ErrorMap {
+    pub fn empty() -> Self {
+        Self(BTreeMap::new())
+    }
+
+    pub fn from_error(field: String, message: String) -> Self {
+        Self(BTreeMap::from([(field, vec![message])]))
+    }
+
+    pub fn messages(&self, field: &str) -> Vec<String> {
+        self.0.get(field).cloned().unwrap_or_default()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
     }
 }
