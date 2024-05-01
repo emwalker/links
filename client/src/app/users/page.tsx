@@ -52,7 +52,7 @@ export default function GET() {
       </ul>
 
       <div>
-        <a href="/users/new">Add a user</a>
+        <a href="/users/new" className="btn btn-blue">Add a user</a>
       </div>
     </main>
   )
