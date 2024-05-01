@@ -4,17 +4,17 @@ mod users {
 
     #[sqlx::test(migrator = "recommendations::MIGRATOR")]
     async fn root(conn: SqlitePool) {
-        let users = topics::fetch_all(
+        let topic = topics::fetch_optional(
             &conn,
             Some(topics::Search {
                 id: Some(topics::ROOT_ID.into()),
             }),
         )
         .await
+        .unwrap()
         .unwrap();
-        let user = users.first().unwrap();
 
-        assert_eq!(user.name, "Root topic");
+        assert_eq!(topic.name, "Root topic");
     }
 
     #[sqlx::test(migrator = "recommendations::MIGRATOR")]

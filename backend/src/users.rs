@@ -3,7 +3,7 @@ use axum::{extract::State, response::IntoResponse, Json};
 // use axum_macros::debug_handler;
 use serde_derive::Serialize;
 
-use crate::store;
+use crate::store::users;
 use crate::types::{AppState, Result, User};
 
 pub async fn fetch_all(State(state): State<AppState>) -> Result<impl IntoResponse> {
@@ -14,7 +14,7 @@ pub async fn fetch_all(State(state): State<AppState>) -> Result<impl IntoRespons
         page: usize,
     }
 
-    let items = store::users::fetch_all(&state.conn, None).await?;
+    let items = users::fetch_all(&state.conn, None).await?;
 
     Ok(Json(ListUserResponse {
         page: 1,
@@ -25,9 +25,9 @@ pub async fn fetch_all(State(state): State<AppState>) -> Result<impl IntoRespons
 
 pub async fn create(
     State(state): State<AppState>,
-    Json(payload): Json<store::users::CreatePayload>,
+    Json(payload): Json<users::CreatePayload>,
 ) -> Result<(StatusCode, impl IntoResponse)> {
-    let result = store::users::create(&state.conn, &payload).await?;
+    let result = users::create(&state.conn, &payload).await?;
     let status = if result.created {
         StatusCode::OK
     } else {

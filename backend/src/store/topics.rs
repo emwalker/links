@@ -68,6 +68,10 @@ pub async fn fetch_all(conn: &SqlitePool, search: Option<Search>) -> Result<Vec<
     Ok(users)
 }
 
+pub async fn fetch_optional(conn: &SqlitePool, search: Option<Search>) -> Result<Option<Topic>> {
+    Ok(fetch_all(conn, search).await?.into_iter().next())
+}
+
 #[derive(Deserialize)]
 pub struct CreatePayload {
     pub owner_id: String,

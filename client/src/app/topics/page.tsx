@@ -24,16 +24,16 @@ async function fetchTopics(): Promise<FetchTopicsResponse> {
 }
 
 export default function GET() {
-  const [users, setUsers] = useState<Topic[]>([])
+  const [topics, setTopics] = useState<Topic[]>([])
 
   useEffect(() => {
     async function thunk() {
       const res = await fetchTopics()
-      setUsers(res.items)
+      setTopics(res.items)
     }
 
     thunk()
-  }, [setUsers])
+  }, [setTopics])
 
   return (
     <main className="p-24">
@@ -43,9 +43,9 @@ export default function GET() {
 
       <ul className="mb-4">
         {
-          users.map(({ id, name }) => (
+          topics.map(({ id, name }) => (
             <li key={id}>
-              <span title={id}>{name}</span>
+              <span title={id}><a href={`/topics/${id}`}>{name}</a></span>
             </li>
           ))
         }

@@ -44,15 +44,15 @@ impl IntoResponse for Error {
 pub enum Role {
     Admin,
     Editor,
-    Unknown,
+    Visitor,
 }
 
 impl Role {
     pub fn to_id(&self) -> &'static str {
         match self {
-            Self::Admin => "79197f85-fb60-486f-b9fe-0aa0b10dabe2",
-            Self::Editor => "99d8335a-1c23-4ad3-a10f-7e63fb3599d2",
-            Self::Unknown => "793dd5d3-7bf2-41b7-bd18-b2d6ba3d02c2",
+            Self::Admin => "admin",
+            Self::Editor => "editor",
+            Self::Visitor => "visitor",
         }
     }
 }
@@ -62,7 +62,7 @@ impl From<&str> for Role {
         match name {
             "admin" => Self::Admin,
             "editor" => Self::Editor,
-            _ => Self::Unknown,
+            _ => Self::Visitor,
         }
     }
 }

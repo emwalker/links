@@ -26,6 +26,7 @@ create table topics (
   updated_at datetime default current_timestamp not null
 );
 
+-- TODO: Add support for synonyms and other languages
 insert into topics (id, owner_id, name, submissions_restricted_to_editors) values
   ('63fa2799-f9ba-41d2-8f8b-49c8eac659fc', '2db58326-ddfa-4561-9ae2-232aa5c32277', 'Root topic', true),
   ('921f9bd2-8d9e-43b2-aef8-c90c10e1eb03', '2db58326-ddfa-4561-9ae2-232aa5c32277', 'Knowledge, learning and education', false),

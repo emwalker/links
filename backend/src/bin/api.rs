@@ -4,7 +4,7 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use recommendations::{types::AppState, user};
+use recommendations::{topics, types::AppState, users};
 use serde_derive::Serialize;
 use sqlx::sqlite::SqlitePool;
 use tower_http::cors::{Any, CorsLayer};
@@ -26,8 +26,11 @@ async fn main() -> Result<()> {
     let app = Router::new()
         .layer(cors)
         .route("/", get(root))
-        .route("/users", get(user::fetch_all))
-        .route("/users", post(user::create))
+        .route("/topics", get(topics::fetch_all))
+        .route("/topics/:topic_id", get(topics::fetch_one))
+        .route("/topics", post(topics::create))
+        .route("/users", get(users::fetch_all))
+        .route("/users", post(users::create))
         .with_state(state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
