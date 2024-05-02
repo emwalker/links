@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ol className="bm-4">
+        <ol className="bm-4 float my-2 mx-4">
           <li><a href="/">Recommendations</a></li>
         </ol>
 
