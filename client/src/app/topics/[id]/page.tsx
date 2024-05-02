@@ -45,7 +45,7 @@ export default function GET({ params }: { params: { id: string } }) {
     }
 
     thunk()
-  }, [setTopic, setRequestInFlight])
+  }, [setTopic, setRequestInFlight, topicId])
 
   if (topic == null) {
     if (requestInFlight) {

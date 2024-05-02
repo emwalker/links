@@ -67,10 +67,6 @@ insert into topics_topics (parent_id, child_id) values
 
 -- Topic roles are sparsely specified.  If a user is an editor or admin of a parent topic, the user
 -- is also an editor or admin of any child topics.
--- Roles:
---   0 - viewer
---   1 - editor
---   2 - admin
 create table users_topics (
   user_id text not null references users(id),
   topic_id text not null references topics(id),
@@ -94,3 +90,5 @@ create table link_rankings (
   created_at datetime default current_timestamp not null,
   primary key (user_id, normalized_url, topic_id)
 );
+
+-- TODO: profiles
