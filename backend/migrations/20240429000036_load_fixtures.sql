@@ -85,10 +85,31 @@ create table link_rankings (
   original_url text not null,
   normalized_url text not null,
   topic_id text not null references topics(id),
-  position_in_results text check (position_in_results in ('top', 'middle', 'bottom')) not null,
+  position_in_results number check (position_in_results in (0, 1, 2)) not null,
   reviewed boolean not null default false,
   created_at datetime default current_timestamp not null,
   primary key (user_id, normalized_url, topic_id)
 );
 
--- TODO: profiles
+-- Different working profiles for different use cases, e.g.:
+--   - Recommendations for work (e.g., technical stuff)
+--   - Recommendations for a project looking into a spam operation (wouldn't want the
+--     recommendations of these users in other contexts)
+-- Only one profile is active at any time.
+create table profiles (
+  id text primary key not null,
+  name text not null,
+  owner_id text not null references users(id),
+  created_at datetime default current_timestamp not null,
+  unique (name, owner_id)
+);
+
+-- Add a hide_rankings boolean?
+create table profiles_topics_users (
+  profile_id text not null references profiles(id),
+  topic_id text not null references topics(id),
+  user_id text not null references users(id),
+  created_at datetime default current_timestamp not null,
+  position_in_results number check (position_in_results in (0, 1, 2)) not null,
+  primary key (profile_id, topic_id, user_id)
+);
