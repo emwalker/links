@@ -43,6 +43,7 @@ create table topics_topics (
   parent_id text not null references topics(id),
   child_id text not null references topics(id),
   created_at datetime default current_timestamp not null,
+  reviewed boolean not null default false,
   primary key (parent_id, child_id)
 );
 
@@ -81,3 +82,15 @@ create table users_topics (
 insert into users_topics (user_id, topic_id, role) values
   -- Root/Root topic/admin
   ('2db58326-ddfa-4561-9ae2-232aa5c32277', '63fa2799-f9ba-41d2-8f8b-49c8eac659fc', 'admin');
+
+-- TODO: Handle special cases for link normalization, e.g., Hacker News
+create table link_rankings (
+  user_id text not null references users(id),
+  original_url text not null,
+  normalized_url text not null,
+  topic_id text not null references topics(id),
+  position_in_results text check (position_in_results in ('top', 'middle', 'bottom')) not null,
+  reviewed boolean not null default false,
+  created_at datetime default current_timestamp not null,
+  primary key (user_id, normalized_url, topic_id)
+);
