@@ -9,5 +9,8 @@ check:
 dev:
 	script/start dev
 
+setup:
+	$(MAKE) -C backend setup
+
 start:
 	script/start prod

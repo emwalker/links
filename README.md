@@ -8,11 +8,28 @@ In this project we're not focused on AI at the moment.  There might be a place f
 
 ## Getting started
 
+To get started with a development environment:
+
 ```sh
 $ git clone git@github.com:emwalker/recommendations.git
+$ cd recommendations
+$ cd client
 $ nvm use 20 # https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating
+$ npm install
+$ cd ..
 $ make check
+$ make setup
 $ make dev
+# Go to http://localhost:3000
+```
+
+To see what the compiled app looks like:
+
+```sh
+$ cd recommendations
+$ make build
+$ make start
+# Go to http://localhost:3000
 ```
 
 ## License

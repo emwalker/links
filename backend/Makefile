@@ -12,10 +12,11 @@ check:
 dev:
 	cargo run --bin api
 
-load-fixtures:
+prod:
+	./target/release/api
+
+setup:
+	cargo install sqlx-cli
 	rm -rf $(DATABASE_FILE)
 	DATABASE_URL=$(DATABASE_URL) sqlx database create
 	DATABASE_URL=$(DATABASE_URL) sqlx migrate run
-
-prod:
-	./target/release/api
