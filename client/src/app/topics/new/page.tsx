@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation'
 import { ChangeEvent, useCallback, useState } from 'react'
 
-async function createUser(username: string) {
-  const body = JSON.stringify({ username })
+async function createTopic(name: string) {
+  const body = JSON.stringify({ name })
   const res = await fetch('/api/topics', {
     method: 'POST',
     headers: {
@@ -30,10 +30,10 @@ export default function GET() {
 
   const onClick = useCallback(async (_event: React.MouseEvent<HTMLElement>) => {
     if (name?.length > 0) {
-      await createUser(name as string)
+      await createTopic(name as string)
     }
 
-    router.push('/users')
+    router.push('/topics')
   }, [router, name])
 
   const addButtonEnabled = name?.length > 0

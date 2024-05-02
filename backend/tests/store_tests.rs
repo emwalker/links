@@ -1,4 +1,4 @@
-mod users {
+mod topics {
     use recommendations::store::{topics, users};
     use sqlx::SqlitePool;
 
@@ -55,7 +55,7 @@ mod users {
     }
 }
 
-mod topics {
+mod users {
     use recommendations::store::users;
     use sqlx::SqlitePool;
 

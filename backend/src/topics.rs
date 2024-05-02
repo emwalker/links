@@ -1,10 +1,11 @@
 use axum::extract::Path;
 use axum::http::StatusCode;
 use axum::{extract::State, response::IntoResponse, Json};
+use serde::Deserialize;
 // use axum_macros::debug_handler;
 use serde_derive::Serialize;
 
-use crate::store::topics;
+use crate::store::{topics, users};
 use crate::types::{AppState, Result, Topic};
 
 pub async fn fetch_all(State(state): State<AppState>) -> Result<impl IntoResponse> {
@@ -45,11 +46,25 @@ pub async fn fetch_one(
     Ok((status, Json(Response { topic })))
 }
 
+#[derive(Deserialize)]
+pub struct CreatePayload {
+    name: String,
+}
+
 pub async fn create(
     State(state): State<AppState>,
-    Json(payload): Json<topics::CreatePayload>,
+    Json(CreatePayload { name }): Json<CreatePayload>,
 ) -> Result<(StatusCode, impl IntoResponse)> {
-    let result = topics::create(&state.conn, &payload).await?;
+    // TODO: Get owner id from request authentication
+    let result = topics::create(
+        &state.conn,
+        &topics::CreatePayload {
+            name,
+            owner_id: users::ROOT_ID.to_owned(),
+        },
+    )
+    .await?;
+
     let status = if result.created {
         StatusCode::OK
     } else {

@@ -1,5 +1,5 @@
 use crate::types::{Error, ErrorMap, Result, Topic};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use sqlx::{error::ErrorKind, QueryBuilder, SqlitePool};
 use tracing::{event, Level};
 
@@ -72,7 +72,6 @@ pub async fn fetch_optional(conn: &SqlitePool, search: Option<Search>) -> Result
     Ok(fetch_all(conn, search).await?.into_iter().next())
 }
 
-#[derive(Deserialize)]
 pub struct CreatePayload {
     pub owner_id: String,
     pub name: String,
