@@ -17,11 +17,6 @@ async fn main() -> Result<()> {
     let conn = SqlitePool::connect(db_url)
         .await
         .expect("failed to open sqlite");
-    recommendations::MIGRATOR
-        .run(&conn)
-        .await
-        .expect("failed to run migrations");
-
     let state = AppState { conn };
 
     let cors = CorsLayer::new()

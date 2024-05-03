@@ -9,9 +9,7 @@ environment=${1:-dev}
 
 function cleanup() {
   [ ! -z "$backend_pid" ] && kill -INT $backend_pid || true
-  [ ! -z "$client_pid" ] && kill -INT $client_pid || true
   pkill -f "backend" || true
-  pkill -f "npm run $environment" || true
 }
 
 function on_sigint() {
@@ -28,8 +26,6 @@ echo "starting up ..."
 make -C backend $environment &
 backend_pid=$!
 
-make -C client $environment &
-client=$!
+make -C client $environment && fg
 
 wait $backend_pid
-wait $client_pid

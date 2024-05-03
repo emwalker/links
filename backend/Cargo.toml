@@ -7,6 +7,10 @@ edition = "2021"
 name = "api"
 path = "src/bin/api.rs"
 
+[[test]]
+name = "integration-tests"
+path = "tests/lib.rs"
+
 [dependencies]
 anyhow = "1.0.82"
 axum = "0.7.5"
