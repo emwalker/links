@@ -1,3 +1,4 @@
+use axum::extract::Path;
 use axum::http::StatusCode;
 use axum::{extract::State, response::IntoResponse, Json};
 // use axum_macros::debug_handler;
@@ -21,6 +22,27 @@ pub async fn fetch_all(State(state): State<AppState>) -> Result<impl IntoRespons
         total: items.len(),
         items,
     }))
+}
+
+pub async fn fetch_one(
+    State(state): State<AppState>,
+    Path((user_id,)): Path<(String,)>,
+) -> Result<(StatusCode, impl IntoResponse)> {
+    #[derive(Serialize)]
+    pub struct Response {
+        user: Option<User>,
+    }
+
+    let user =
+        users::fetch_optional(&state.conn, Some(users::Search { id: Some(user_id) })).await?;
+
+    let status = if user.is_some() {
+        StatusCode::OK
+    } else {
+        StatusCode::NOT_FOUND
+    };
+
+    Ok((status, Json(Response { user })))
 }
 
 pub async fn create(

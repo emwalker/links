@@ -5,5 +5,8 @@
     "**/*.sass",
     "**/*.less",
     "client/node_modules/@mantine/core/styles.css"
-  ]
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  }
 }

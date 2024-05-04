@@ -26,7 +26,7 @@ export default function GET() {
             <Card
               key={id}
               component="a"
-              href={`/users/${id}`}
+              href={`/topics/${id}`}
               padding="sm"
               radius="md"
               className={classes.topicCard}>
