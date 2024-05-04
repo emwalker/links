@@ -61,3 +61,13 @@
   width: rem(25px);
   height: rem(25px);
 }
+
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.content {
+  flex: 1;
+  padding: var(--mantine-spacing-xl);
+}
