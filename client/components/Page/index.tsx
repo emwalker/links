@@ -11,13 +11,15 @@ import {
   IconSearch,
   IconBrandCodesandbox,
 } from '@tabler/icons-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import classes from './index.module.css'
 
 const data = [
-  { link: '/home', label: 'Home', icon: IconHome },
-  { link: '/users', label: 'Users', icon: IconUser },
-  { link: '/topics', label: 'Topics', icon: IconCircleLetterT },
-  { link: '/search', label: 'Search', icon: IconSearch },
+  { pathname: '/home', label: 'Home', icon: IconHome },
+  { pathname: '/users', label: 'Users', icon: IconUser },
+  { pathname: '/topics', label: 'Topics', icon: IconCircleLetterT },
+  { pathname: '/search', label: 'Search', icon: IconSearch },
 ]
 
 type Props = {
@@ -25,22 +27,22 @@ type Props = {
 }
 
 export function Page({ children }: Props) {
-  const [active, setActive] = useState('Home')
+  const pathname = usePathname()
+  const [active, setActive] = useState(pathname)
 
   const links = data.map((item) => (
-    <Anchor
+    <Link
       className={classes.link}
-      data-active={item.label === active || undefined}
-      href={item.link}
+      data-active={item.pathname === active || undefined}
+      href={item.pathname}
       key={item.label}
       onClick={() => {
-        // event.preventDefault()
-        setActive(item.label)
+        setActive(item.pathname)
       }}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />
       <span>{item.label}</span>
-    </Anchor>
+    </Link>
   ))
 
   return (
