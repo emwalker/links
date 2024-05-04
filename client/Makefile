@@ -1,12 +1,13 @@
 build:
-	npm run build
+	yarn build
 
 check:
-	npm run lint
-	npm run build
+	yarn jest
+	yarn lint
+	yarn build
 
 dev:
-	npm run dev
+	yarn dev
 
 prod:
-	npm run start
+	yarn start
