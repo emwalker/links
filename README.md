@@ -8,6 +8,12 @@ But there are limitations to what I find interesting from other people.  Someone
 
 In this project we're not focused on AI at the moment.  There might be a place for it later on, but the core of the system will be very much focused on the actions taken by individual users.
 
+## Screenshots
+
+It's all a mockup, and nothing in the app is real at this point.
+
+![Screenshot](https://github.com/emwalker/recommendations/assets/760949/53b70d6b-b99f-48ce-aff8-b93f81dc569c)
+
 ## Getting started
 
 To get started with a development environment:
