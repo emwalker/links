@@ -7,11 +7,25 @@ use axum::{
 use recommendations::{topics, types::AppState, users};
 use serde_derive::Serialize;
 use sqlx::sqlite::SqlitePool;
-use tower_http::cors::{Any, CorsLayer};
+use tower_http::{
+    cors::{Any, CorsLayer},
+    trace::TraceLayer,
+};
+use tracing::Level;
+use tracing_subscriber::{filter, layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing_subscriber::fmt::init();
+    let filter = filter::Targets::new()
+        .with_target("tower_http::trace::on_response", Level::TRACE)
+        .with_target("tower_http::trace::on_request", Level::TRACE)
+        .with_target("tower_http::trace::make_span", Level::DEBUG)
+        .with_default(Level::INFO);
+    let tracing_layer = tracing_subscriber::fmt::layer().compact().with_ansi(false);
+    tracing_subscriber::registry()
+        .with(tracing_layer)
+        .with(filter)
+        .init();
 
     let db_url = "./data/development.db?mode=rwc";
     let conn = SqlitePool::connect(db_url)
@@ -32,6 +46,7 @@ async fn main() -> Result<()> {
         .route("/users", get(users::fetch_all))
         .route("/users", post(users::create))
         .route("/users/:user_id", get(users::fetch_one))
+        .layer(TraceLayer::new_for_http())
         .with_state(state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();

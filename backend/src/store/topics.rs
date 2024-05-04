@@ -1,6 +1,6 @@
-use crate::types::{Error, ErrorMap, Result, Topic};
+use crate::types::{Error, ErrorMap, Pagination, Result, Topic};
 use serde::Serialize;
-use sqlx::{error::ErrorKind, QueryBuilder, SqlitePool};
+use sqlx::{error::ErrorKind, QueryBuilder, Sqlite, SqlitePool};
 use tracing::{event, Level};
 
 pub const ROOT_ID: &str = "63fa2799-f9ba-41d2-8f8b-49c8eac659fc";
@@ -11,6 +11,19 @@ pub struct Search {
 }
 
 impl Search {
+    fn add_where(query: &Option<Self>, builder: &mut QueryBuilder<Sqlite>) {
+        if let Some(query) = query {
+            if !query.is_empty() {
+                builder.push("where ");
+
+                if let Some(id) = &query.id {
+                    builder.push("t.id = ");
+                    builder.push_bind(id.to_string());
+                }
+            }
+        }
+    }
+
     fn is_empty(&self) -> bool {
         self.id.is_none()
     }
@@ -38,26 +51,27 @@ impl From<Row> for Topic {
     }
 }
 
-pub async fn fetch_all(conn: &SqlitePool, search: Option<Search>) -> Result<Vec<Topic>> {
-    let mut query = QueryBuilder::new(
+pub async fn fetch_all(
+    conn: &SqlitePool,
+    pagination: &Pagination,
+    search: Option<Search>,
+) -> Result<(Vec<Topic>, u32)> {
+    let mut builder = QueryBuilder::new(
         r#"
         select t.id, t.name, t.updated_at
         from topics t
         "#,
     );
+    Search::add_where(&search, &mut builder);
 
-    if let Some(search) = search {
-        if !search.is_empty() {
-            query.push("where ");
+    let &Pagination { page, per_page } = pagination;
+    let offset = page.saturating_sub(1).saturating_mul(per_page) as i64;
+    builder.push("limit ");
+    builder.push_bind(per_page);
+    builder.push(" offset ");
+    builder.push_bind(offset);
 
-            if let Some(id) = &search.id {
-                query.push("t.id = ");
-                query.push_bind(id.to_string());
-            }
-        }
-    }
-
-    let users = query
+    let users = builder
         .build_query_as::<Row>()
         .fetch_all(conn)
         .await?
@@ -65,11 +79,24 @@ pub async fn fetch_all(conn: &SqlitePool, search: Option<Search>) -> Result<Vec<
         .map(Topic::from)
         .collect::<Vec<_>>();
 
-    Ok(users)
+    let mut builder = QueryBuilder::new("select count(*) from topics t ");
+    Search::add_where(&search, &mut builder);
+    let total = builder.build_query_scalar::<i32>().fetch_one(conn).await?;
+
+    Ok((users, total as u32))
 }
 
 pub async fn fetch_optional(conn: &SqlitePool, search: Option<Search>) -> Result<Option<Topic>> {
-    Ok(fetch_all(conn, search).await?.into_iter().next())
+    let (users, _count) = fetch_all(
+        conn,
+        &Pagination {
+            page: 1,
+            per_page: 10,
+        },
+        search,
+    )
+    .await?;
+    Ok(users.into_iter().next())
 }
 
 pub struct CreatePayload {

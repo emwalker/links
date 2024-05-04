@@ -1,8 +1,6 @@
-use axum::{
-    http::StatusCode,
-    response::{IntoResponse, Response},
-};
-use serde::Serialize;
+use axum::{http::StatusCode, response::IntoResponse, Json};
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 use sqlx::sqlite::SqlitePool;
 use std::collections::BTreeMap;
 use thiserror::Error;
@@ -22,21 +20,20 @@ pub enum Error {
     UserCreationError,
 }
 
+impl IntoResponse for Error {
+    fn into_response(self) -> axum::response::Response {
+        let error = json!({
+            "message": format!("{}", self)
+        });
+        (StatusCode::INTERNAL_SERVER_ERROR, Json(error)).into_response()
+    }
+}
+
 pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Clone)]
 pub struct AppState {
     pub conn: SqlitePool,
-}
-
-impl IntoResponse for Error {
-    fn into_response(self) -> Response {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Something went wrong: {}", self),
-        )
-            .into_response()
-    }
 }
 
 #[derive(Serialize, Eq, PartialEq, Hash)]
@@ -100,5 +97,21 @@ impl ErrorMap {
 
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
+    }
+}
+
+#[derive(Deserialize)]
+#[serde(default)]
+pub struct Pagination {
+    pub page: i32,
+    pub per_page: i32,
+}
+
+impl Default for Pagination {
+    fn default() -> Self {
+        Self {
+            page: 1,
+            per_page: 10,
+        }
     }
 }

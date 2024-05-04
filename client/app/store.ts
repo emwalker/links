@@ -48,10 +48,14 @@ export type FetchTopicsResponse = {
   total: number,
   items: Topic[],
   page: number,
+  per_page: number,
 }
 
-export async function fetchTopics(): Promise<FetchTopicsResponse> {
-  const res = await fetch('http://localhost:3000/api/topics', { cache: 'no-cache' })
+export async function fetchTopics(page: number, perPage: number): Promise<FetchTopicsResponse> {
+  const url = new URL('http://localhost:3000/api/topics')
+  url.searchParams.set('page', page.toString())
+  url.searchParams.set('per_page', perPage.toString())
+  const res = await fetch(url, { cache: 'no-cache' })
 
   if (!res.ok) {
     throw new Error('Failed to fetch topics')

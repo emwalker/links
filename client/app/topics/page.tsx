@@ -6,22 +6,24 @@ import { Page } from '@/components/Page'
 import { Topic, fetchTopics } from '@/app/store'
 import classes from './page.module.css'
 
-const pageSize = 10
-
 export default function GET() {
   const [activePage, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(10)
   const [topics, setTopics] = useState<Topic[]>([])
   const [topicCount, setTopicCount] = useState<number>(0)
 
   useEffect(() => {
     (async function thunk() {
-      const { total, items } = await fetchTopics()
+      const { total, items, per_page } = await fetchTopics(activePage, perPage)
       setTopicCount(total)
-      setTopics(items.slice(0, pageSize))
+      setPerPage(per_page)
+      setTopics(items.slice(0, per_page))
     }())
-  }, [setTopics])
+  }, [setTopicCount, setPerPage, setTopics, activePage, perPage])
 
-  const pageCount = topicCount / pageSize
+  const pageCount = Math.floor(topicCount / perPage) + 1
+
+  console.log(pageCount, topicCount, perPage)
 
   return (
     <Page>

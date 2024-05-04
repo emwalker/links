@@ -1,4 +1,4 @@
-use axum::extract::Path;
+use axum::extract::{Path, Query};
 use axum::http::StatusCode;
 use axum::{extract::State, response::IntoResponse, Json};
 use serde::Deserialize;
@@ -6,21 +6,27 @@ use serde::Deserialize;
 use serde_derive::Serialize;
 
 use crate::store::{topics, users};
-use crate::types::{AppState, Result, Topic};
+use crate::types::{AppState, Pagination, Result, Topic};
 
-pub async fn fetch_all(State(state): State<AppState>) -> Result<impl IntoResponse> {
+pub async fn fetch_all(
+    State(state): State<AppState>,
+    query: Query<Pagination>,
+) -> Result<impl IntoResponse> {
     #[derive(Serialize)]
     pub struct FetchAllResponse {
-        total: usize,
+        total: u32,
         items: Vec<Topic>,
-        page: usize,
+        page: u32,
+        per_page: u32,
     }
 
-    let items = topics::fetch_all(&state.conn, None).await?;
+    let pagination = query.0;
+    let (items, total) = topics::fetch_all(&state.conn, &pagination, None).await?;
 
     Ok(Json(FetchAllResponse {
-        page: 1,
-        total: items.len(),
+        page: pagination.page.try_into().unwrap_or(1),
+        per_page: pagination.per_page.try_into().unwrap_or(10),
+        total,
         items,
     }))
 }
