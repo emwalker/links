@@ -1,40 +1,16 @@
 'use client';
 
 import { useEffect, useState } from "react";
-
-type User = {
-  id: string,
-  username: string,
-  name: String,
-  is_admin: boolean,
-}
-
-type FetchUsersResponse = {
-  total: Number,
-  items: User[],
-  page: Number,
-}
-
-async function fetchUsers(): Promise<FetchUsersResponse> {
-  const res = await fetch('http://localhost:3000/api/users', { cache: 'no-cache' })
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch users')
-  }
-
-  return res.json()
-}
+import { fetchUsers, User } from '@/app/store';
 
 export default function GET() {
   const [users, setUsers] = useState<User[]>([])
 
   useEffect(() => {
-    async function thunk() {
+    (async function thunk() {
       const res = await fetchUsers()
       setUsers(res.items)
-    }
-
-    thunk()
+    })()
   }, [setUsers])
 
   return (
