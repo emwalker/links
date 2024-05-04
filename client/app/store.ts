@@ -1,3 +1,7 @@
+export const ROOT_USER_ID = '2db58326-ddfa-4561-9ae2-232aa5c32277'
+
+export type ErrorMap = { [key:string]: string[] }
+
 export type User = {
   id: string,
   username: string,
@@ -6,9 +10,9 @@ export type User = {
 }
 
 export type FetchUsersResponse = {
-  total: Number,
+  total: number,
   items: User[],
-  page: Number,
+  page: number,
 }
 
 export async function fetchUsers(): Promise<FetchUsersResponse> {
@@ -41,9 +45,9 @@ export type Topic = {
 }
 
 export type FetchTopicsResponse = {
-  total: Number,
+  total: number,
   items: Topic[],
-  page: Number,
+  page: number,
 }
 
 export async function fetchTopics(): Promise<FetchTopicsResponse> {
@@ -65,6 +69,31 @@ export async function fetchTopic(topicId: string): Promise<FetchTopicResponse> {
 
   if (!res.ok) {
     console.log('failed to fetch topic: ', res)
+  }
+
+  return res.json()
+}
+
+type CreateTopicPayload = {
+  owner_id: string,
+  name: string,
+}
+
+type CreateTopicResponse = {
+  topic_id: string | null,
+  errors: ErrorMap,
+  created: boolean,
+}
+
+export async function createTopic(payload: CreateTopicPayload): Promise<CreateTopicResponse> {
+  const res = await fetch('/api/topics', {
+    headers: { 'Content-Type': 'application/json' },
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+
+  if (!res.ok) {
+    console.log('failed to create topic: ', res)
   }
 
   return res.json()
