@@ -38,7 +38,7 @@ export default function Page() {
                 },
               })
 
-              router.push('/home')
+              router.push(`/${username}`)
             })}
           >
             <TextInput

@@ -1,40 +1,42 @@
 'use client'
 
-import { Button, Card, Title, Pagination } from '@mantine/core'
+import { Card, Title, Button, Pagination } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { Page } from '@/components/Page'
-import { Topic, fetchTopics } from '@/lib/store'
 import classes from './page.module.css'
+import { User, fetchUsers } from '@/lib/store'
+import useSession from '@/lib/useSession'
 
 export default function GET() {
+  const { session: { username } } = useSession()
   const [activePage, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
-  const [topics, setTopics] = useState<Topic[]>([])
-  const [topicCount, setTopicCount] = useState<number>(0)
+  const [users, setUsers] = useState<User[]>([])
+  const [userCount, setTopicCount] = useState<number>(0)
 
   useEffect(() => {
     (async function thunk() {
-      const { total, items, per_page } = await fetchTopics(activePage, perPage)
+      const { total, items, per_page } = await fetchUsers(activePage, perPage)
       setTopicCount(total)
       setPerPage(per_page)
-      setTopics(items.slice(0, per_page))
+      setUsers(items.slice(0, per_page))
     }())
-  }, [setTopicCount, setPerPage, setTopics, activePage, perPage])
+  }, [setTopicCount, setPerPage, setUsers, activePage, perPage])
 
-  const fractionalPageCount = topicCount / perPage
+  const fractionalPageCount = userCount / perPage
   const integerPageCount = Math.floor(fractionalPageCount)
   const pageCount = fractionalPageCount > integerPageCount ? integerPageCount + 1 : integerPageCount
 
   return (
     <Page>
       <div className={classes.top}>
-        <Title className={classes.title} order={2}>Topics</Title>
+        <Title className={classes.title} order={2}>Users</Title>
 
         <Button
           color="green"
           variant="filled"
           component="a"
-          href="/topics/new"
+          href={`/${username}/users/new`}
           className={classes.addButton}
           >
             Add
@@ -43,15 +45,15 @@ export default function GET() {
 
       <div className={classes.results}>
         {
-          topics.map(({ id, name }) => (
+          users.map(({ id, username: otherUsername }) => (
             <Card
               key={id}
               component="a"
-              href={`/topics/${id}`}
+              href={`/${username}/users/${id}`}
               padding="sm"
               radius="md"
               className={classes.card}>
-              {name}
+              {otherUsername}
             </Card>
           ))
         }

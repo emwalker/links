@@ -15,7 +15,7 @@ export function Welcome() {
       <Space h="xs" />
 
       <Text ta="center" size="lg" maw={580} mx="auto" mt="xl">
-        <Button data-testid="enter" component="a" href="/home">Enter</Button>
+        <Button data-testid="login" component="a" href="/login">Log in</Button>
       </Text>
     </>
   )
