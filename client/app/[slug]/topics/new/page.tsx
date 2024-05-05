@@ -77,7 +77,7 @@ export default function GET() {
           />
 
           <Group justify="flex-start" mt="md">
-            <Button variant="filled" color="green" type="submit">Add</Button>
+            <Button type="submit">Add</Button>
           </Group>
         </form>
       </Box>

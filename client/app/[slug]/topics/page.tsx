@@ -33,8 +33,6 @@ export default function GET() {
         <Title className={classes.title} order={2}>Topics</Title>
 
         <Button
-          color="green"
-          variant="filled"
           component="a"
           href={`/${username}/topics/new`}
           className={classes.addButton}

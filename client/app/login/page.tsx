@@ -50,7 +50,7 @@ export default function Page() {
             />
 
             <Group justify="flex-start" mt="md">
-              <Button variant="filled" color="green" type="submit">Log in</Button>
+              <Button type="submit">Log in</Button>
             </Group>
           </form>
         </Stack>
