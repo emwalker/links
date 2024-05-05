@@ -1,25 +1,31 @@
-use axum::extract::Path;
+use axum::extract::{Path, Query};
 use axum::http::StatusCode;
 use axum::{extract::State, response::IntoResponse, Json};
 // use axum_macros::debug_handler;
 use serde_derive::Serialize;
 
 use crate::store::users;
-use crate::types::{AppState, Result, User};
+use crate::types::{AppState, Pagination, Result, User};
 
-pub async fn fetch_all(State(state): State<AppState>) -> Result<impl IntoResponse> {
+pub async fn fetch_all(
+    State(state): State<AppState>,
+    query: Query<Pagination>,
+) -> Result<impl IntoResponse> {
     #[derive(Serialize)]
     pub struct ListUserResponse {
-        total: usize,
+        total: u32,
         items: Vec<User>,
-        page: usize,
+        page: u32,
+        per_page: u32,
     }
 
-    let items = users::fetch_all(&state.conn, None).await?;
+    let pagination = query.0;
+    let (items, total) = users::fetch_all(&state.conn, &pagination, None).await?;
 
     Ok(Json(ListUserResponse {
         page: 1,
-        total: items.len(),
+        per_page: 10,
+        total,
         items,
     }))
 }

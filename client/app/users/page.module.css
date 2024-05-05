@@ -1,7 +1,22 @@
-.results {
-  padding-top: rem(10);
+.top {
+  display: flex;
+  flex-direction: row;
 }
 
-.userCard {
+.title {
+  flex: 1;
+}
+
+.results {
+  padding-top: rem(10);
+  padding-bottom: rem(10);
+}
+
+.card {
+  margin-top: rem(5);
+}
+
+.addButton {
+  justify-content: flex-end;
   margin-top: rem(5);
 }

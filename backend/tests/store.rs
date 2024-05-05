@@ -56,13 +56,17 @@ mod topics {
 }
 
 mod users {
-    use recommendations::store::users;
+    use recommendations::{store::users, types::Pagination};
     use sqlx::SqlitePool;
 
     #[sqlx::test(migrator = "recommendations::MIGRATOR")]
     async fn root(conn: SqlitePool) {
-        let users = users::fetch_all(
+        let (users, _total) = users::fetch_all(
             &conn,
+            &Pagination {
+                page: 1,
+                per_page: 10,
+            },
             Some(users::Search {
                 id: Some(users::ROOT_ID.into()),
             }),

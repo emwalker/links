@@ -23,8 +23,6 @@ export default function GET() {
 
   const pageCount = Math.floor(topicCount / perPage) + 1
 
-  console.log(pageCount, topicCount, perPage)
-
   return (
     <Page>
       <div className={classes.top}>
@@ -50,7 +48,7 @@ export default function GET() {
               href={`/topics/${id}`}
               padding="sm"
               radius="md"
-              className={classes.topicCard}>
+              className={classes.card}>
               {name}
             </Card>
           ))

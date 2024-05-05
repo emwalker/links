@@ -10,13 +10,17 @@ export type User = {
 }
 
 export type FetchUsersResponse = {
-  total: number,
   items: User[],
   page: number,
+  per_page: number,
+  total: number,
 }
 
-export async function fetchUsers(): Promise<FetchUsersResponse> {
-  const res = await fetch('http://localhost:3000/api/users', { cache: 'no-cache' })
+export async function fetchUsers(page: number, perPage: number): Promise<FetchUsersResponse> {
+  const url = new URL('http://localhost:3000/api/users')
+  url.searchParams.set('page', page.toString())
+  url.searchParams.set('per_page', perPage.toString())
+  const res = await fetch(url, { cache: 'no-cache' })
 
   if (!res.ok) {
     throw new Error('Failed to fetch users')
@@ -39,16 +43,40 @@ export async function fetchUser(userId: string): Promise<FetchUserResponse> {
   return res.json()
 }
 
+type CreateUserPayload = {
+  username: string,
+}
+
+type CreateUserResponse = {
+  user_id: string | null,
+  errors: ErrorMap,
+  created: boolean,
+}
+
+export async function createUser(payload: CreateUserPayload): Promise<CreateUserResponse> {
+  const res = await fetch('/api/users', {
+    headers: { 'Content-Type': 'application/json' },
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+
+  if (!res.ok) {
+    console.log('failed to create user: ', res)
+  }
+
+  return res.json()
+}
+
 export type Topic = {
   id: string,
   name: string,
 }
 
 export type FetchTopicsResponse = {
-  total: number,
   items: Topic[],
   page: number,
   per_page: number,
+  total: number,
 }
 
 export async function fetchTopics(page: number, perPage: number): Promise<FetchTopicsResponse> {

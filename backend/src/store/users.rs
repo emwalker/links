@@ -1,6 +1,6 @@
-use crate::types::{Error, ErrorMap, Result, User};
+use crate::types::{Error, ErrorMap, Pagination, Result, User};
 use serde::{Deserialize, Serialize};
-use sqlx::{error::ErrorKind, QueryBuilder, SqlitePool};
+use sqlx::{error::ErrorKind, QueryBuilder, Sqlite, SqlitePool};
 use tracing::{event, Level};
 
 pub const ROOT_ID: &str = "2db58326-ddfa-4561-9ae2-232aa5c32277";
@@ -11,6 +11,19 @@ pub struct Search {
 }
 
 impl Search {
+    fn add_where(query: &Option<Self>, builder: &mut QueryBuilder<Sqlite>) {
+        if let Some(query) = query {
+            if !query.is_empty() {
+                builder.push("where ");
+
+                if let Some(id) = &query.id {
+                    builder.push("u.id = ");
+                    builder.push_bind(id.to_string());
+                }
+            }
+        }
+    }
+
     fn is_empty(&self) -> bool {
         self.id.is_none()
     }
@@ -41,26 +54,27 @@ impl From<Row> for User {
     }
 }
 
-pub async fn fetch_all(conn: &SqlitePool, search: Option<Search>) -> Result<Vec<User>> {
-    let mut query = QueryBuilder::new(
+pub async fn fetch_all(
+    conn: &SqlitePool,
+    pagination: &Pagination,
+    search: Option<Search>,
+) -> Result<(Vec<User>, u32)> {
+    let mut builder = QueryBuilder::new(
         r#"
             select u.id, u.username, u.name, u.is_admin
             from users u
             "#,
     );
+    Search::add_where(&search, &mut builder);
 
-    if let Some(search) = search {
-        if !search.is_empty() {
-            query.push("where ");
+    let &Pagination { page, per_page } = pagination;
+    let offset = page.saturating_sub(1).saturating_mul(per_page) as i64;
+    builder.push("limit ");
+    builder.push_bind(per_page);
+    builder.push(" offset ");
+    builder.push_bind(offset);
 
-            if let Some(id) = &search.id {
-                query.push("u.id = ");
-                query.push_bind(id.to_string());
-            }
-        }
-    }
-
-    let users = query
+    let users = builder
         .build_query_as::<Row>()
         .fetch_all(conn)
         .await?
@@ -68,11 +82,24 @@ pub async fn fetch_all(conn: &SqlitePool, search: Option<Search>) -> Result<Vec<
         .map(User::from)
         .collect::<Vec<_>>();
 
-    Ok(users)
+    let mut builder = QueryBuilder::new("select count(*) from users u ");
+    Search::add_where(&search, &mut builder);
+    let total = builder.build_query_scalar::<i32>().fetch_one(conn).await?;
+
+    Ok((users, total as u32))
 }
 
 pub async fn fetch_optional(conn: &SqlitePool, search: Option<Search>) -> Result<Option<User>> {
-    Ok(fetch_all(conn, search).await?.into_iter().next())
+    let (users, _total) = fetch_all(
+        conn,
+        &Pagination {
+            page: 1,
+            per_page: 10,
+        },
+        search,
+    )
+    .await?;
+    Ok(users.into_iter().next())
 }
 
 #[derive(Deserialize)]
