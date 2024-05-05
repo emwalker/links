@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Title } from '@mantine/core'
-import { User, fetchUser } from '@/app/store'
+import { User, fetchUser } from '@/lib/store'
 import { Page } from '@/components/Page'
 
 const page = (name: string, inner: React.ReactNode): React.ReactNode => (

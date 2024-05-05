@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { notifications } from '@mantine/notifications'
 import { Page } from '@/components/Page'
-import { createUser } from '@/app/store'
+import { createUser } from '@/lib/store'
 import classes from './page.module.css'
 
 type Errors = {

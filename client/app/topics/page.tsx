@@ -3,7 +3,7 @@
 import { Button, Card, Title, Pagination } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { Page } from '@/components/Page'
-import { Topic, fetchTopics } from '@/app/store'
+import { Topic, fetchTopics } from '@/lib/store'
 import classes from './page.module.css'
 
 export default function GET() {

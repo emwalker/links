@@ -4,7 +4,7 @@ import { Card, Title, Button, Pagination } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { Page } from '@/components/Page'
 import classes from './page.module.css'
-import { User, fetchUsers } from '@/app/store'
+import { User, fetchUsers } from '@/lib/store'
 
 export default function GET() {
   const [activePage, setPage] = useState(1)

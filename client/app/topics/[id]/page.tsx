@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Title } from '@mantine/core'
-import { Topic, fetchTopic } from '@/app/store'
+import { Topic, fetchTopic } from '@/lib/store'
 import { Page } from '@/components/Page'
 
 const page = (name: string, inner: React.ReactNode): React.ReactNode => (
