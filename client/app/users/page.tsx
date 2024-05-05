@@ -10,7 +10,7 @@ export default function GET() {
   const [activePage, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [users, setUsers] = useState<User[]>([])
-  const [topicCount, setTopicCount] = useState<number>(0)
+  const [userCount, setTopicCount] = useState<number>(0)
 
   useEffect(() => {
     (async function thunk() {
@@ -21,7 +21,9 @@ export default function GET() {
     }())
   }, [setTopicCount, setPerPage, setUsers, activePage, perPage])
 
-  const pageCount = Math.floor(topicCount / perPage) + 1
+  const fractionalPageCount = userCount / perPage
+  const integerPageCount = Math.floor(fractionalPageCount)
+  const pageCount = fractionalPageCount > integerPageCount ? integerPageCount + 1 : integerPageCount
 
   return (
     <Page>

@@ -21,7 +21,9 @@ export default function GET() {
     }())
   }, [setTopicCount, setPerPage, setTopics, activePage, perPage])
 
-  const pageCount = Math.floor(topicCount / perPage) + 1
+  const fractionalPageCount = topicCount / perPage
+  const integerPageCount = Math.floor(fractionalPageCount)
+  const pageCount = fractionalPageCount > integerPageCount ? integerPageCount + 1 : integerPageCount
 
   return (
     <Page>

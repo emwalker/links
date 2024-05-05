@@ -10,6 +10,7 @@
 .results {
   padding-top: rem(10);
   padding-bottom: rem(10);
+  min-height: 560px;
 }
 
 .card {
