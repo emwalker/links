@@ -71,3 +71,8 @@
   flex: 1;
   padding: var(--mantine-spacing-xl);
 }
+
+.currentWorkspace {
+  width: 100%;
+  text-align: center;
+}

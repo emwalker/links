@@ -1,15 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Code, Group, Title, LoadingOverlay } from '@mantine/core'
+import { Select, Group, Title, LoadingOverlay } from '@mantine/core'
 import {
   IconUser,
   IconCircleLetterT,
   IconSwitchHorizontal,
   IconLogout,
-  IconHome,
   IconSearch,
   IconBrandCodesandbox,
+  IconBoxPadding,
+  IconHome,
 } from '@tabler/icons-react'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -18,9 +19,10 @@ import useSession from '@/lib/useSession'
 
 const data = [
   { relativePathname: '/', label: 'Home', icon: IconHome },
-  { relativePathname: '/users', label: 'Users', icon: IconUser },
-  { relativePathname: '/topics', label: 'Topics', icon: IconCircleLetterT },
   { relativePathname: '/search', label: 'Search', icon: IconSearch },
+  { relativePathname: '/topics', label: 'Topics', icon: IconCircleLetterT },
+  { relativePathname: '/users', label: 'Users', icon: IconUser },
+  { relativePathname: '/workspaces', label: 'Worspaces', icon: IconBoxPadding },
 ]
 
 type Props = {
@@ -43,8 +45,14 @@ export function Page({ children }: Props) {
     return <LoadingOverlay />
   }
 
+  const profiles = [
+    { value: 'default', label: 'Default workspace' },
+  ]
+
   const links = data.map((item) => {
-    const fullPathname = `/${username}/${item.relativePathname}`
+    const fullPathname = item.relativePathname === '/'
+      ? `/${username}`
+      : `/${username}${item.relativePathname}`
     return (
       <Link
         className={classes.link}
@@ -67,9 +75,12 @@ export function Page({ children }: Props) {
       <nav className={classes.navbar}>
         <div className={classes.navbarMain}>
           <Group className={classes.header} justify="left">
-            <IconBrandCodesandbox stroke={1.5} />
-            <Title order={3}>Recommendations</Title>
-            <Code>{username}</Code>
+            <Link className={classes.link} href={`/${username}`}>
+              <IconBrandCodesandbox className={classes.linkIcon} stroke={1.5} />
+              <span><Title order={3}>Recommendations</Title></span>
+            </Link>
+
+            <Select className={classes.currentWorkspace} data={profiles} value="default" />
           </Group>
           {links}
         </div>

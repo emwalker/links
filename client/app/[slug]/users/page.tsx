@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, Title, Button, Pagination } from '@mantine/core'
+import { Card, Title, Button, Pagination, Text, Group, Box } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { Page } from '@/components/Page'
 import classes from './page.module.css'
@@ -30,7 +30,15 @@ export default function GET() {
   return (
     <Page>
       <div className={classes.top}>
-        <Title className={classes.title} order={2}>Users</Title>
+        <Group className={classes.header}>
+          <Title className={classes.title} order={2}>Users</Title>
+          <Box>
+            <Text>
+              Your view of and preferences around other users within the current
+              workspace.
+            </Text>
+          </Box>
+        </Group>
 
         <Button
           color="green"
