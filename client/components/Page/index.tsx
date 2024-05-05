@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Anchor, Group, Title } from '@mantine/core'
+import { useEffect, useState } from 'react'
+import { Group, Title } from '@mantine/core'
 import {
   IconUser,
   IconCircleLetterT,
@@ -11,9 +11,10 @@ import {
   IconSearch,
   IconBrandCodesandbox,
 } from '@tabler/icons-react'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import classes from './index.module.css'
+import useSession from '@/lib/useSession'
 
 const data = [
   { pathname: '/home', label: 'Home', icon: IconHome },
@@ -29,6 +30,18 @@ type Props = {
 export function Page({ children }: Props) {
   const pathname = usePathname()
   const [active, setActive] = useState(pathname)
+  const { session, isLoading, logout } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading && !session.isLoggedIn) {
+      router.replace('/login')
+    }
+  }, [isLoading, session.isLoggedIn, router])
+
+  if (isLoading) {
+    return <p className="text-lg">Loading...</p>
+  }
 
   const links = data.map((item) => (
     <Link
@@ -57,15 +70,22 @@ export function Page({ children }: Props) {
         </div>
 
         <div className={classes.footer}>
-          <Anchor href="/change-account" className={classes.link}>
+          <Link href="/change-account" className={classes.link}>
             <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
             <span>Change account</span>
-          </Anchor>
+          </Link>
 
-          <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
+          <Link
+            href="/logout"
+            className={classes.link}
+            onClick={(event) => {
+              event.preventDefault()
+              logout()
+            }}
+          >
             <IconLogout className={classes.linkIcon} stroke={1.5} />
             <span>Logout</span>
-          </a>
+          </Link>
         </div>
       </nav>
 
