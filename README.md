@@ -12,7 +12,7 @@ In this project we're not focused on AI at the moment.  There might be a place f
 
 It's all a mockup, and nothing in the app is real at this point.
 
-![Screenshot](https://github.com/emwalker/recommendations/assets/760949/53b70d6b-b99f-48ce-aff8-b93f81dc569c)
+![Topic page](https://github.com/emwalker/recommendations/assets/760949/df188504-1107-4b20-8379-1974b9f6d670)
 
 ## Getting started
 
