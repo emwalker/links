@@ -3,6 +3,7 @@ import React from 'react'
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { theme } from '../theme'
+import './global.css'
 
 export const metadata = {
   title: 'Links',
