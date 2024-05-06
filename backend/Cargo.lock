@@ -698,6 +698,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "links"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "axum-macros",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "sqlx",
+ "thiserror",
+ "tokio",
+ "tower",
+ "tower-http",
+ "tracing",
+ "tracing-subscriber",
+ "uuid",
+]
+
+[[package]]
 name = "linux-raw-sys"
 version = "0.4.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1035,26 +1055,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
  "getrandom",
-]
-
-[[package]]
-name = "recommendations"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "axum",
- "axum-macros",
- "serde",
- "serde_derive",
- "serde_json",
- "sqlx",
- "thiserror",
- "tokio",
- "tower",
- "tower-http",
- "tracing",
- "tracing-subscriber",
- "uuid",
 ]
 
 [[package]]

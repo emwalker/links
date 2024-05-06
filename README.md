@@ -1,4 +1,4 @@
-# Recommendations
+# Links
 
 Prototype app to look at what a next iteration on search engines might look like.
 
@@ -12,15 +12,15 @@ In this project we're not focused on AI at the moment.  There might be a place f
 
 It's all a mockup, and nothing in the app is real at this point.
 
-![Topic page](https://github.com/emwalker/recommendations/assets/760949/df188504-1107-4b20-8379-1974b9f6d670)
+![Topic page](https://github.com/emwalker/links/assets/760949/df188504-1107-4b20-8379-1974b9f6d670)
 
 ## Getting started
 
 To get started with a development environment:
 
 ```sh
-$ git clone git@github.com:emwalker/recommendations.git
-$ cd recommendations
+$ git clone git@github.com:emwalker/links.git
+$ cd links
 $ cd client
 $ nvm use # https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating
 $ npm install
@@ -34,7 +34,7 @@ $ make dev
 To see what the production app looks like:
 
 ```sh
-$ cd recommendations
+$ cd links
 $ make build
 $ make start
 # Go to http://localhost:3000

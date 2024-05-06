@@ -13,7 +13,7 @@ export const defaultSession: SessionData = {
 
 export const sessionOptions: SessionOptions = {
   password: 'c64cd57aa009e702fea94b8f175a72734c4144a3',
-  cookieName: 'recommendations',
+  cookieName: 'links',
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
   },

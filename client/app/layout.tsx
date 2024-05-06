@@ -5,7 +5,7 @@ import { Notifications } from '@mantine/notifications'
 import { theme } from '../theme'
 
 export const metadata = {
-  title: 'Recommendations',
+  title: 'Links',
   description: 'Prototype of a next iteration on search engines',
 }
 

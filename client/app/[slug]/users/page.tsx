@@ -41,8 +41,6 @@ export default function GET() {
         </Group>
 
         <Button
-          color="green"
-          variant="filled"
           component="a"
           href={`/${username}/users/new`}
           className={classes.addButton}

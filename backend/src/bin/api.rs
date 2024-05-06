@@ -4,7 +4,7 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use recommendations::{topics, types::AppState, users};
+use links::{topics, types::AppState, users};
 use serde_derive::Serialize;
 use sqlx::sqlite::SqlitePool;
 use tower_http::{
@@ -63,7 +63,7 @@ struct Root {
 
 async fn root() -> Json<Root> {
     Json(Root {
-        message: "Recommendations, v1".to_string(),
+        message: "Links, v1".to_string(),
         status: "up".to_string(),
     })
 }

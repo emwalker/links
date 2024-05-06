@@ -1,8 +1,8 @@
 mod topics {
-    use recommendations::store::{topics, users};
+    use links::store::{topics, users};
     use sqlx::SqlitePool;
 
-    #[sqlx::test(migrator = "recommendations::MIGRATOR")]
+    #[sqlx::test(migrator = "links::MIGRATOR")]
     async fn root(conn: SqlitePool) {
         let topic = topics::fetch_optional(
             &conn,
@@ -17,7 +17,7 @@ mod topics {
         assert_eq!(topic.name, "Root topic");
     }
 
-    #[sqlx::test(migrator = "recommendations::MIGRATOR")]
+    #[sqlx::test(migrator = "links::MIGRATOR")]
     async fn create(conn: SqlitePool) {
         let owner_id = users::ROOT_ID;
         let name: String = uuid::Uuid::new_v4().into();
@@ -56,10 +56,10 @@ mod topics {
 }
 
 mod users {
-    use recommendations::{store::users, types::Pagination};
+    use links::{store::users, types::Pagination};
     use sqlx::SqlitePool;
 
-    #[sqlx::test(migrator = "recommendations::MIGRATOR")]
+    #[sqlx::test(migrator = "links::MIGRATOR")]
     async fn root(conn: SqlitePool) {
         let (users, _total) = users::fetch_all(
             &conn,
@@ -80,7 +80,7 @@ mod users {
         assert!(user.is_admin);
     }
 
-    #[sqlx::test(migrator = "recommendations::MIGRATOR")]
+    #[sqlx::test(migrator = "links::MIGRATOR")]
     async fn create(conn: SqlitePool) {
         let username: String = uuid::Uuid::new_v4().into();
         let result = users::create(

@@ -6,7 +6,7 @@ export function Welcome() {
   return (
     <>
       <Title className={classes.title} ta="center" mt={100}>
-        Recommendations
+        Links
       </Title>
 
       <Text ta="center" size="lg" maw={580} mx="auto" mt="xl">

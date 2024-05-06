@@ -24,7 +24,7 @@ export default function Page() {
     <Center>
       <Paper shadow="xs" p="xl" miw={400} mt={100}>
         <Text size="xl" fw={500}>
-          Welcome to Reccomendations
+          Welcome to Links
         </Text>
 
         <Stack>
