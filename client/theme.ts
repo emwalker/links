@@ -1,13 +1,19 @@
 'use client'
 
-import { createTheme } from '@mantine/core'
+import { CSSVariablesResolver, createTheme } from '@mantine/core'
+
+export const cssVariablesResolver: CSSVariablesResolver = () => ({
+  variables: {},
+  light: {},
+  dark: {},
+})
 
 export const theme = createTheme({
   primaryColor: 'blue',
   colors: {
     dark: [
-      '#7E838D',
-      '#6A717B',
+      '#C9C9C9',
+      '#B8B8B8',
       '#575E69',
       '#444C58',
       '#313946',

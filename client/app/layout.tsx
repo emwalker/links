@@ -2,7 +2,7 @@ import '@mantine/core/styles.css'
 import React from 'react'
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
-import { theme } from '../theme'
+import { cssVariablesResolver, theme } from '@/theme'
 import './global.css'
 
 export const metadata = {
@@ -23,6 +23,7 @@ export default function RootLayout({ children }: { children: any }) {
       <body>
         <MantineProvider
           defaultColorScheme="dark"
+          cssVariablesResolver={cssVariablesResolver}
           theme={theme}
         >
           <Notifications />
